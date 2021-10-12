@@ -2761,7 +2761,10 @@ relating to script realms and execution.
 
 <pre class="cddl remote-cddl">
 
-ScriptCommand = (ScriptGetRealmsCommand)
+ScriptCommand = (
+  ScriptInvokeCommand //
+  ScriptGetRealmsCommand
+)
 
 </pre>
 
@@ -2769,7 +2772,10 @@ ScriptCommand = (ScriptGetRealmsCommand)
 
 <pre class="cddl local-cddl">
 
-ScriptResult = (ScriptGetRealmsResult)
+ScriptResult = (
+  ScriptInvokeResult //
+  ScriptGetRealmsResult
+)
 
 ScriptEvent = (
     ScriptRealmCreatedEvent //
@@ -2894,6 +2900,73 @@ Note: Future variations of this specification will retain the invariant that
 </div>
 
 ### Commands ### {#module-script-commands}
+
+#### The script.invoke Command ####  {#command-script-invoke}
+
+The <dfn export for=commands>script.invoke</dfn> command invokes a provided
+function with given arguments in a given realm.
+
+ <code>RealmInfo</code> can be either a realm or a browsing context.
+
+Issue: describe the detailed behaviour.
+
+Issue: declare `RemoteValueArgument`.
+
+Issue: declare `LocalValueArgument`.
+
+<dl>
+   <dt>Command Type</dt>
+   <dd>
+    <pre class="cddl remote-cddl">
+      ScriptInvokeCommand = {
+        method: "script.invoke",
+        params: ScriptInvokeParameters
+      }
+
+      ScriptInvokeParameters = {
+        functionDeclaration: text;
+        arguments: [InvokeArgument];
+        awaitPromise?: bool;
+        target: Target;
+      }
+
+      InvokeArgument = RemoteValueArgument | LocalValueArgument;
+
+      // TODO: declare.
+      RemoteValueArgument = {
+        objectId: string;
+      };
+
+      // TODO: declare.
+      LocalValueArgument = {
+        type: string;
+        value: any;
+      };
+
+      </pre>
+   </dd>
+   <dt>Return Type</dt>
+   <dd>
+    <pre class="cddl local-cddl">
+      ScriptInvokeResult = (
+        ScriptInvokeResultSuccess //
+        ScriptInvokeResultException
+      )
+
+      ScriptInvokeResultSuccess = {
+         result: RemoteValue
+      }
+
+      ScriptInvokeResultException = {
+        exceptionDetails: ExceptionDetails
+      }
+    </pre>
+   </dd>
+</dl>
+
+TODO: Add timeout argument as described in the script.evaluate.
+
+TODO: Add the [=remote end steps=] with |command parameters|.
 
 #### The script.getRealms Command ####  {#command-script-getRealms}
 
